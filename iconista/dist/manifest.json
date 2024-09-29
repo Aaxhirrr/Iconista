@@ -1,0 +1,32 @@
+{
+    "testId": "06ee9d2e-a8f0-4dbe-881a-9698c924be8e",
+    "name": "Iconista",
+    "version": "1.0.0",
+    "manifestVersion": 2,
+    "requirements": {
+        "apps": [
+            {
+                "name": "Express",
+                "apiVersion": 1
+            }
+        ],
+        "experimentalApis": true,
+        "renditionPreview": true
+    },
+    "entryPoints": [
+        {
+            "type": "panel",
+            "id": "panel1",
+            "main": "index.html",
+            "permissions": {
+                "sandbox": [
+                    "allow-popups",
+                    "allow-popups-to-escape-sandbox",
+                    "allow-downloads"
+                ],
+                "oauth": []
+            },
+            "documentSandbox": "allow-scripts allow-same-origin allow-popups"
+        }
+    ]
+}

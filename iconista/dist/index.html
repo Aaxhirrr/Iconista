@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><i>Iconista ⭐</i></title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden; /* Ensures the image fits inside the circle */
+}
+
+.circle img {
+    width: 100%;
+    height: 200%;
+    object-fit: cover; /* Ensures the image covers the entire circle */
+}
+.container {
+    background-image: url('https://i.postimg.cc/6pqQg0b6/844e25149a21a14ce1946780d4083de1.jpg');
+    background-color: white;
+    padding: 160px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+.square {
+    width: 100px; /* Increased size of the square */
+    height: 100px;
+    background-image: url('https://i.postimg.cc/3xxy77NT/Screenshot-2024-09-29-at-6-03-05-AM.png'); /* Ensure the image URL is correct */
+    background-size: cover; /* Ensures the image covers the entire square */
+    background-position: center; /* Centers the image */
+    border: 3px solid #ccc; /* Border around the square */
+    margin-bottom: 20px; /* Added space between square and other elements */
+    border-radius: 11px;
+}
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .prompt-box {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea {
+    width: 300px;
+    height: 80px;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: none;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+textarea:focus {
+    border: 4px solid #007BFF;
+}
+
+        .generate-button {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+    padding: 12px 40px;
+    font-size: 16px;
+    border: none;
+    background-color: #000000;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #676869;
+}
+
+        button img {
+            margin-right: 7px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #my-image-generated {
+            margin-top: 20px;
+            max-width: 100%;
+            cursor: grab;
+            display: none;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        img {
+    margin-top: 20px;
+    max-width: 100%;
+    max-height: 300px; /* Limits the height of the generated image */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: grab; /* Indicates the image can be dragged */
+}
+
+img:active {
+    cursor: grabbing; /* Changes cursor style while dragging */
+}
+
+label {
+    font-size: 17px;
+    color: #000000;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
+}
+        .download-button {
+            display: none; /* Hide until image is generated */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+<script type="module" src="index.js"></script></head>
+<body>
+    <div class="container">
+        <h1><i>Iconista ⭐</i></h1>
+        <div class="prompt-box">
+            <label for="prompt">Type anything in the box:</label>
+            <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
+        </div>
+        <div class="generate-button">
+            <button onclick="generateImage()" type="button" id="generateImage">
+                <img src="https://via.placeholder.com/20?text=✨" alt="Wand Icon" /> Generate
+            </button>
+        </div>
+        <img id="my-image-generated" src="" alt="Generated Image">
+        
+        <!-- New Download Button -->
+        <div class="download-button" id="downloadButtonContainer">
+            <button onclick="openImageInNewTab()" type="button" id="downloadImage">
+                Open in New Tab
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function generateImage() {
+            console.log("Generating image...");
+
+            const promptValue = document.querySelector("#prompt").value.trim() || "a rubber duck";
+            fetch("http://localhost:5000/api/assets/generate", {
+                method: "POST",
+                body: JSON.stringify({ description: promptValue }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(json => {
+                const imgUrl = json.imageUrl;
+                const generatedImage = document.getElementById('my-image-generated');
+                generatedImage.src = imgUrl;
+                generatedImage.style.display = 'block';
+
+                // Show the download button and set its data attribute
+                const downloadButtonContainer = document.getElementById('downloadButtonContainer');
+                downloadButtonContainer.style.display = 'block';
+
+                document.getElementById('downloadImage').setAttribute('data-url', imgUrl);
+            })
+            .catch(error => {
+                console.error("Error generating image:", error);
+                alert("An error occurred while generating the image.");
+            });
+        }
+
+        function openImageInNewTab() {
+            const downloadButton = document.getElementById('downloadImage');
+            const imgUrl = downloadButton.getAttribute('data-url');
+
+            if (imgUrl) {
+                // Open the image in a new tab
+                window.open(imgUrl, '_blank');
+            } else {
+                alert('No image to open. Please generate an image first.');
+            }
+        }
+    </script>
+</body>
+</html>
